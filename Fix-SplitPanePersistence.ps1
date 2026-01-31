@@ -345,6 +345,15 @@ function Update-TerminalActions {
                 command = @{
                     action = 'duplicateTab'
                 }
+            },
+            @{
+                keys = 'ctrl+shift+.'
+                command = @{
+                    action = 'splitPane'
+                    split = 'auto'
+                    splitMode = 'duplicate'
+                    commandline = 'pwsh -NoExit -Command "gh copilot"'
+                }
             }
         )
         
