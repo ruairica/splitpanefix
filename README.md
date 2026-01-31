@@ -28,13 +28,14 @@ This script configures three things to work together:
 .\Fix-SplitPanePersistence.ps1
 
 # Restart your terminal, then use:
+# Restart your terminal, then use:
 #   Alt+Shift+-    → horizontal split (same directory)
 #   Alt+Shift++    → vertical split (same directory)
 #   Ctrl+Shift+D   → duplicate tab (same directory)
 
-# Optional: Add GitHub Copilot CLI keybinding
+# Optional: Add GitHub Copilot CLI integration
 .\Fix-SplitPanePersistence.ps1 -Copilot
-#   Ctrl+Shift+.   → split + GitHub Copilot CLI
+#   Then type 'spc' to split pane + launch Copilot in current directory
 ```
 
 ## What It Does
@@ -63,17 +64,21 @@ This script configures three things to work together:
 
 ### Bonus: GitHub Copilot CLI Integration
 
-Run with `-Copilot` to add an extra keybinding:
+Run with `-Copilot` to add a helper function to your PowerShell profile:
 
 ```powershell
 .\Fix-SplitPanePersistence.ps1 -Copilot
 ```
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+Shift+.` | Split pane + launch GitHub Copilot CLI |
+This adds `Split-Copilot` (alias: `spc`) to your profile. After restarting your terminal:
 
-This splits your terminal and opens the [GitHub Copilot CLI](https://github.com/github/gh-copilot) in your current directory.
+```powershell
+spc   # Splits pane and launches Copilot CLI in your current directory
+```
+
+> **Why a function instead of a keybinding?** Windows Terminal can't combine `splitMode: duplicate` (for directory inheritance) with a custom `commandline`. The `spc` function works around this by using `wt split-pane -d "$PWD"` to explicitly pass the current directory.
+
+This opens [GitHub Copilot CLI](https://github.com/github/gh-copilot) in a new pane, right where you're working.
 
 ## Why This Should Be the Default
 
@@ -98,7 +103,7 @@ The `splitMode: duplicate` setting in Windows Terminal keybindings tells it to u
 | `-WhatIf` | Dry run mode. Shows what would change without modifying anything. |
 | `-Verbose` | Detailed logging of all operations. |
 | `-ThemePath` | Custom directory for user-writable themes (default: `%LOCALAPPDATA%\oh-my-posh\themes`). |
-| `-Copilot` | Adds a keybinding (`Ctrl+Shift+.`) to split pane and launch GitHub Copilot CLI. |
+| `-Copilot` | Adds `Split-Copilot` function (alias: `spc`) to your profile for launching Copilot CLI in a split pane. |
 
 ## Safety Features
 

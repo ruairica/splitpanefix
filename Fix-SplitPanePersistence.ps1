@@ -358,19 +358,8 @@ function Update-TerminalActions {
             }
         )
         
-        # Add Copilot keybinding if requested
-        if ($Copilot) {
-            $desiredActions += @{
-                keys = 'ctrl+shift+period'
-                command = @{
-                    action = 'splitPane'
-                    split = 'auto'
-                    splitMode = 'duplicate'
-                    commandline = 'pwsh -NoExit -Command "copilot"'
-                }
-            }
-            Write-Log "Including Copilot keybinding (Ctrl+Shift+.)" -Verbose
-        }
+        # Add Copilot keybinding if requested - NOTE: This is handled via profile function instead
+        # Windows Terminal can't combine splitMode:duplicate with commandline (directory inheritance breaks)
         
         $modified = $false
         
@@ -521,6 +510,30 @@ if ($terminalSettings) {
 }
 else {
     Write-Log "Windows Terminal settings not found - skipping Terminal configuration"
+}
+
+# Step 7: Add Copilot split function if requested
+if ($Copilot) {
+    $profileContent = Get-Content $profilePath -Raw
+    if ($profileContent -notmatch 'Split-Copilot') {
+        $copilotFunction = @'
+
+# Split pane and launch GitHub Copilot CLI in current directory
+function Split-Copilot {
+    wt -w 0 split-pane -d "$PWD" pwsh -NoLogo -NoExit -Command "copilot"
+}
+Set-Alias -Name spc -Value Split-Copilot
+'@
+        if ($PSCmdlet.ShouldProcess($profilePath, "Add Split-Copilot function")) {
+            Backup-File -Path $profilePath
+            Add-Content -Path $profilePath -Value $copilotFunction
+            Write-Log "Added Split-Copilot function (alias: spc) to profile"
+            $script:ChangesMode = $true
+        }
+    }
+    else {
+        Write-Log "Split-Copilot function already in profile" -Verbose
+    }
 }
 
 # Summary
