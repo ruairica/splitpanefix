@@ -135,23 +135,18 @@ Copy-Item "settings.json.bak-20240115-143022" "settings.json"
 
 ## WSL Support
 
-The Windows Terminal keybindings configured by this script work for WSL profiles too! But there's one critical setup step.
+The Windows Terminal keybindings configured by this script work for WSL profiles too! The script automatically detects and fixes a common issue.
 
-### Important: Fix Your WSL Profile
+### Automatic WSL Profile Fix
 
-By default, Windows Terminal may use the distro's launcher (e.g., `Ubuntu.exe` or `Ubuntu2404.exe`) which **does not pass the current working directory** to the shell. You need to change it to use `wsl.exe` directly.
+By default, Windows Terminal may use the distro's launcher (e.g., `Ubuntu.exe`) which **does not pass the current working directory** to the shell. The script automatically detects this and fixes it by changing the profile to use `wsl.exe -d <distro>` instead.
 
-In Windows Terminal Settings → Profiles → Your Ubuntu Profile → Command line, change it to:
-
+```powershell
+# The script will show this during a dry run:
+What if: Performing the operation "Change commandline to 'wsl.exe -d Ubuntu-24.04'" on target "WSL profile 'Ubuntu-24.04'".
 ```
-wsl.exe -d Ubuntu-24.04
-```
 
-(Replace `Ubuntu-24.04` with your distro name from `wsl -l -v`)
-
-Also set **Starting directory** to `~` (or leave it blank).
-
-See [microsoft/terminal#3158](https://github.com/microsoft/terminal/issues/3158#issuecomment-2789336476) for details.
+See [microsoft/terminal#3158](https://github.com/microsoft/terminal/issues/3158#issuecomment-2789336476) for why this is necessary.
 
 ### Configure Your Shell
 
