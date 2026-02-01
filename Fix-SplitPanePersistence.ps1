@@ -162,11 +162,12 @@ function Show-OMPVersionWarning {
     Write-Host ""
     Write-Host "  If you continue with an outdated version, your Oh My Posh may break!" -ForegroundColor Red
     Write-Host ""
-    Write-Host "  To update Oh My Posh:" -ForegroundColor Cyan
+    Write-Host "  To update Oh My Posh (recommended):" -ForegroundColor Cyan
     Write-Host "    winget upgrade JanDeDobbeleer.OhMyPosh" -ForegroundColor White
-    Write-Host "  or" -ForegroundColor Gray
-    Write-Host "    Set-ExecutionPolicy Bypass -Scope Process -Force; " -ForegroundColor White -NoNewline
-    Write-Host "Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://ohmyposh.dev/install.ps1'))" -ForegroundColor White
+    Write-Host ""
+    Write-Host "  Alternative (download and execute script from ohmyposh.dev):" -ForegroundColor Gray
+    Write-Host "    Set-ExecutionPolicy Bypass -Scope Process -Force; " -ForegroundColor DarkGray -NoNewline
+    Write-Host "Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://ohmyposh.dev/install.ps1'))" -ForegroundColor DarkGray
     Write-Host ""
 }
 
@@ -578,6 +579,7 @@ if ($ompInstalled) {
         }
         else {
             # Prompt user for confirmation
+            # Any response other than 'y' or 'Y' (including empty/Enter) is treated as "No" (safe default)
             $response = Read-Host "Do you want to continue anyway? This may break your Oh My Posh setup. (y/N)"
             if ($response -notmatch '^[Yy]') {
                 Write-Host ""
